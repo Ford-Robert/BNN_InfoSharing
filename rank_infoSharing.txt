@@ -1,0 +1,81 @@
+1. Monitor Weight Statistics During Training
+
+Every once in a while (e.g., every few epochs), extract summary statistics from the posterior distributions of your weights. For example, you can use the learned means (or even a combination of means and variances) from each Bayesian layer.
+
+    Extract Posterior Parameters:
+    For each weight in a layer, record its posterior mean (and optionally variance).
+
+    Compute Correlations:
+    Calculate the pairwise correlation (e.g., Pearson correlation) between these posterior means. This will give you a correlation matrix that tells you how similarly different weights are behaving.
+
+2. Cluster Weights Based on Correlation
+
+Once you have the correlation matrix, use a clustering algorithm (like k-means, hierarchical clustering, or spectral clustering) to group weights that exhibit high correlation.
+
+    Dynamic Grouping:
+    The idea is to let the data determine which weights are similar. You might decide on a fixed number of groups or let the algorithm decide based on a similarity threshold.
+
+3. Define Shared, Group-Level Priors
+
+For each group identified by the clustering:
+
+    Set Up a Group Prior:
+    Instead of giving each weight an independent fixed prior (e.g., N(0,σ2)N(0,σ2)), you assign a shared prior for the entire group. For example, you could assume that all weights in group GiGi​ follow
+    w∼N(μGi,σGi2)
+    w∼N(μGi​​,σGi​2​)
+
+    where μGiμGi​​ and σGiσGi​​ are group-specific hyperparameters.
+
+    Learnable Hyperparameters:
+    These group-level parameters can be made learnable (i.e., defined as parameters in your model). During training, gradients from the KL divergence term (comparing each weight’s posterior to its group’s shared prior) will update these hyperparameters.
+
+4. Modify the Loss Function
+
+Your loss function in a BNN typically includes:
+
+    A data term (like MSE) that measures prediction error.
+
+    A KL divergence term that regularizes the weight posteriors toward their priors.
+
+To incorporate information sharing:
+
+    KL Divergence per Group:
+    For each weight, compute the KL divergence between its posterior and the shared group prior rather than an independent prior. The loss for the weights in group GiGi​ would be:
+    KL(q(w∣θ) ∣∣ pGi(w))=KL(N(μw,σw2) ∥ N(μGi,σGi2))
+    KL(q(w∣θ)∣∣pGi​​(w))=KL(N(μw​,σw2​)
+
+    ​N(μGi​​,σGi​2​))
+
+    Aggregate Over Groups:
+    Sum or average these KL terms over all groups and add them (scaled by a factor) to your data loss.
+
+5. Integrate the Process into Training
+
+You can structure your training loop into two phases:
+
+    Regular Training Phase:
+
+        For a set number of epochs, train your model normally using your current group assignments.
+
+    Re-grouping Phase:
+
+        Periodically (say, every TT epochs), re-evaluate the correlations among weights.
+
+        Update the group assignments using your chosen clustering method.
+
+        Update or reinitialize the group-level prior hyperparameters (or carry them forward if you want continuity).
+
+
+
+
+
+
+
+
+
+
+
+Concerns:
+
+So we set up the groups then enforce a group prior on each group. This means that will probably be even more correlated than before, so the groups will never change. 
+Also they may suffer from the "recursive?" collapse that the hyperpriors cause. Where if the posteriors start to get smaller, this will cause the priors to be smaller, which will encourage the posteriors to be smaller and so on until the posteriors are basically 0.
