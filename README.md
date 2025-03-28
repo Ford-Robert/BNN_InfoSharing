@@ -13,3 +13,24 @@ I also want to create a tool that can focus on suspected exploded and vanish gra
 I also want to look at how changing the width of these networks could change the learnable priors.
 
 Maybe look into how learnable parameters fit in with the other optimization techniques
+
+
+
+Create histograms that are generated based on the mu and sigma of the posteriors of each weight and bais
+
+Create statistics on:
+- The mean of posterior Mu's
+- The SD of posterior Mu's
+- The mean of post Sigma's
+- The SD of post Sigma's
+
+
+Maybe would be a good idea to measure the KL divergence between every posterior distribution (per layer?) and then sum? What would that show?
+
+
+
+**Final Clean Up:**
+- Fix up the Posterior Log and collection. Make the data structure make sense.
+- Fix up Colab files so that the represent examples of how to use the code
+- Fix up code and functions into python files
+- Clean up functions and rework them. Maybe that graphing stuff
