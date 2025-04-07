@@ -1,54 +1,6 @@
 # BNN_InfoSharing
 
-This Repo will have the details to implement a Bayesian Neural Network, in which the weight distributions are determined by a common layer by layer prior through Bayesian Information Sharing.
-
-TODO:
-
-- Set up a demo file that fits and Normal BNN and a learnable priors BNN, and shows all the diagnostics of how this impacts the BNN
-- Set up a demo of normal BNN and learnable, but for an actual dataset like MNIST
-
-
-
-I also want to create a tool that can focus on suspected exploded and vanish gradients, and see how the learnable parameters affected those distributions. Maybe like we look at the top exploding distributions and compare them across models.
-
-I also want to look at how changing the width of these networks could change the learnable priors.
-
-Maybe look into how learnable parameters fit in with the other optimization techniques
-
-Maybe would be a good idea to measure the KL divergence between every posterior distribution (per layer?) and then sum? What would that show?
-
-
-
-**Final Clean Up:**
-
-- Look into how I can set up all of my functions into one file that can be pip installed
-- Fix up Colab files so that the represent examples of how to use the code
-- Fix up code and functions into python files
-- Clean up functions and rework them. Maybe that graphing stuff
-
-
-
-This is what the parameters log looks like:
-
-distribution_log = {
-    epoch: {
-        'layer1': {
-            'posterior': {
-                'weight': {'mu': np.array(...), 'sigma': np.array(...)},
-                'bias':   {'mu': np.array(...), 'sigma': np.array(...)}
-            },
-            'prior': {
-                'weight': {'mu': np.array(...), 'sigma': np.array(...)},
-                'bias':   {'mu': np.array(...), 'sigma': np.array(...)}
-            }
-        },
-        'layer2': { ... },
-        # etc.
-    },
-    # next epoch...
-}
-
-
+Thank you to the creators of [Bayesian Neural Network PyTorch](https://github.com/Harry24k/bayesian-neural-network-pytorch/tree/master) for their work on a lightweight BNN project. All of my work is based on the torchbnn library.
 
 
 # Bayesian Neural Networks (BNN) Logging & Analysis
@@ -294,19 +246,4 @@ for epoch in range(100):
     if epoch % 10 == 0:
         print(f"Epoch {epoch}: MSE = {mse.item():.4f}, KL = {kl.item():.4f}")
 ```
-
-### Visualize and Compute Statistics:
-Use the plotting and statistical analysis functions as described in the sections above.
-
-## Summary
-
-This repository provides a modular approach to:
-
-- Log the evolution of distribution parameters in a BNN.
-- Visualize and analyze these parameters through various plots and summary tables.
-- Customize Bayesian layers with shared priors to experiment with hierarchical models.
-
-Feel free to modify and extend these tools to fit your specific research or application needs!
-
-This README is complete and can be easily copied and pasted into your GitHub repository.
 
